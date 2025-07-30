@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  # Celery Worker
+  celery:
+    build: .
+    command: celery -A ecommerce_backend worker --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=False
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_NAME=ecommerce_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5673//  # Using internal port 5673
+      - CELERY_RESULT_BACKEND=redis://redis:6380/0  # Using internal port 6380
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - ecommerce_network
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Celery Beat (Scheduler)
+  celery-beat:
+    build: .
+    command: celery -A ecommerce_backend beat --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=False
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_NAME=ecommerce_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5673//  # Using internal port 5673
+      - CELERY_RESULT_BACKEND=redis://redis:6380/0  # Using internal port 6380
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - ecommerce_network
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Redis Cache (using custom ports)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6380"  # Mapped to 6380 externally instead of 6379
+    volumes:
+      - redis_data:/data
+    networks:
+      - ecommerce_network
+    command: redis-server --port 6380  # Run Redis on port 6380 internally
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6380", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # RabbitMQ Message Broker (using custom ports)
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
+    ports:
+      - "5673:5673"  # Mapped to 5673 externally instead of 5672
+      - "15673:15672"  # Management UI on different port
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_NODE_PORT=5673  # Run RabbitMQ on port 5673 internally
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - ecommerce_network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # MinIO Object Storage
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - ecommerce_network
+
+  # Meilisearch
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=your-meilisearch-master-key
+    volumes:
+      - meilisearch_data:/meili_data
+    networks:
+      - ecommerce_network
+
+volumes:
+  redis_data:
+  rabbitmq_data:
+  minio_data:
+  meilisearch_data:
+
+networks:
+  ecommerce_network:
+    driver: bridge
