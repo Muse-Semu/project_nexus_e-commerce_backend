@@ -224,11 +224,14 @@ DJOSER = {
         'user_create': 'users.serializers.UserCreateSerializer',
         'user': 'users.serializers.UserSerializer',
         'current_user': 'users.serializers.UserSerializer',
+        'user_create_password_retype': 'users.serializers.UserCreateSerializer',
     },
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticated'],
         'user_list': ['rest_framework.permissions.IsAdminUser'],
     },
+    'USER_ID_FIELD': 'id',
+    'USER_ID_MODEL_FIELD': 'id',
 }
 
 # Celery Configuration
@@ -250,9 +253,9 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='smuse1756@gmail.com')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='silj sxde rhdz uesg')
 
 # Twilio configuration
-TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID', default='')
-TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN', default='')
-TWILIO_PHONE_NUMBER = config('TWILIO_PHONE_NUMBER', default='')
+TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID', default='AC65ae0ab2cddd2ff6cb5405c56c372bc2')
+TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN', default='e448df4fdbc54a82940b1968de372e8e')
+TWILIO_PHONE_NUMBER = config('TWILIO_PHONE_NUMBER', default='+17755996715')
 
 # MinIO configuration
 MINIO_ENDPOINT = config('MINIO_ENDPOINT', default='localhost:9000')
