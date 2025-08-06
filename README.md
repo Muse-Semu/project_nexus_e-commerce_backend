@@ -1,4 +1,4 @@
-# E-commerce Backend - Project Nexus
+# E-commerce Backend - Project Nexus Plan
 
 A production-ready, high-performance e-commerce backend built with Django, designed to handle 1000 requests/second concurrently.
 
@@ -25,7 +25,7 @@ A production-ready, high-performance e-commerce backend built with Django, desig
 
 ### Performance & Scalability
 - **High Performance**: Optimized for 1000 requests/second
-- **Redis Caching**: 15-minute TTL for product lists and search results
+- **Redis Caching**: TTL for product lists and search results
 - **Async Processing**: Celery with RabbitMQ for background tasks
 - **Database Optimization**: PostgreSQL with optimized indexes
 - **Containerization**: Docker and Kubernetes ready
@@ -72,8 +72,7 @@ ecommerce_backend/
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
-cd project-nexus
+git clone https://github.com/Muse-Semu/project_nexus_e-commerce_backend.git
 ```
 
 2. **Set up environment variables**
@@ -249,17 +248,7 @@ kubectl apply -f k8s/
 - SQL injection prevention
 - XSS protection
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
 
 ## 🆘 Support
 
