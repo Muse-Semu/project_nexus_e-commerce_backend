@@ -382,3 +382,5 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='smuse1756@gmail.com')
 
 # Create logs directory if it doesn't exist
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+
+APPEND_SLASH=False
