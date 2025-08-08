@@ -15,4 +15,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Use Gunicorn for production
-CMD ["gunicorn", "ecommerce_backend.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn ecommerce_backend.wsgi:application --bind 0.0.0.0:8000"]
