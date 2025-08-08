@@ -33,8 +33,7 @@ def send_sms_verification(self, phone_number, code):
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@shared_task(bind=True, max_retries=3)
-def send_email_notification(self, email, subject, message, template_name=None, context=None):
+def send_email_notification(email, subject, message, template_name=None, context=None):
     """
     Send email notification
     """
@@ -66,8 +65,7 @@ def send_email_notification(self, email, subject, message, template_name=None, c
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@shared_task(bind=True, max_retries=3)
-def send_welcome_email(self, user_id):
+def send_welcome_email(user_id):
     """
     Send welcome email to new users
     """
@@ -97,7 +95,6 @@ def send_welcome_email(self, user_id):
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@shared_task(bind=True, max_retries=3)
 def send_password_reset_email(self, user_id, reset_url):
     """
     Send password reset email
@@ -130,8 +127,7 @@ def send_password_reset_email(self, user_id, reset_url):
         raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))
 
 
-@shared_task(bind=True, max_retries=3)
-def send_account_activation_email(self, user_id, activation_url):
+def send_account_activation_email(user_id, activation_url):
     """
     Send account activation email
     """
@@ -187,4 +183,4 @@ def send_vendor_approval_notification(self, vendor_id):
         logger.error(f"Vendor profile with id {vendor_id} not found")
     except Exception as exc:
         logger.error(f"Failed to send vendor approval notification: {str(exc)}")
-        raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries)) 
+        raise self.retry(exc=exc, countdown=60 * (2 ** self.request.retries))

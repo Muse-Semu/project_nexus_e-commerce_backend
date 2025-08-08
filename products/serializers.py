@@ -54,8 +54,8 @@ PRODUCT_CREATE_SCHEMA = {
             "enum": ["draft", "active", "inactive", "deleted"]
         }
     },
-    "required": ["name", "description", "base_price", "stock_quantity"],
-    "additionalProperties": False
+    "required": ["name", "description", "base_price", "stock_quantity","category"],
+    "additionalProperties": True
 }
 
 CATEGORY_CREATE_SCHEMA = {

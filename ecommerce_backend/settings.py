@@ -120,16 +120,18 @@ DATABASES = {
 }
 
 # Cache configuration
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config('REDIS_URL', default='redis://localhost:6380/0'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        'TIMEOUT': 900,  # 15 minutes
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': config('REDIS_URL', default='redis://localhost:6380/0'),
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         },
+#         'TIMEOUT': 900,  # 15 minutes
+#     }
+# }
+
+
 
 # Session configuration
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
@@ -235,8 +237,8 @@ DJOSER = {
 }
 
 # Celery Configuration
-CELERY_BROKER_URL = config('RABBITMQ_URL', default='amqp://guest:guest@localhost:5673/')
-CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6380/0')
+# CELERY_BROKER_URL = config('RABBITMQ_URL', default='amqp://guest:guest@localhost:5673/')
+# CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6380/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -269,8 +271,8 @@ CHAPA_API_KEY = config('CHAPA_API_KEY', default='')
 CHAPA_WEBHOOK_SECRET = config('CHAPA_WEBHOOK_SECRET', default='')
 
 # Meilisearch configuration
-MEILISEARCH_URL = config('MEILISEARCH_URL', default='http://localhost:7700')
-MEILISEARCH_MASTER_KEY = config('MEILISEARCH_MASTER_KEY', default='')
+# MEILISEARCH_URL = config('MEILISEARCH_URL', default='http://localhost:7700')
+# MEILISEARCH_MASTER_KEY = config('MEILISEARCH_MASTER_KEY', default='')
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

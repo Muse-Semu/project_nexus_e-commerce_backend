@@ -12,6 +12,7 @@ import hashlib
 import logging
 
 from carts.models import CheckoutSession
+from orders.utils import create_order_from_checkout
 
 logger = logging.getLogger(__name__)
 
@@ -64,15 +65,22 @@ def chapa_webhook(request):
         
         # Process payment status
         if status == 'success':
-            # Payment successful
-            checkout_session.payment_status = 'completed'
-            checkout_session.status = 'completed'
-            checkout_session.save()
-            
-            # TODO: Create order from checkout session
-            # create_order_from_checkout(checkout_session)
-            
-            logger.info(f"Payment successful for checkout session: {checkout_session.id}")
+            # Payment successful - create order
+            try:
+                order = create_order_from_checkout(checkout_session)
+                
+                # Update checkout session payment status
+                checkout_session.payment_status = 'completed'
+                checkout_session.save()
+                
+                logger.info(f"Order {order.order_number} created from successful payment")
+                
+            except Exception as e:
+                logger.error(f"Failed to create order from checkout session: {str(e)}")
+                return Response(
+                    {'error': 'Failed to create order'}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
             
         elif status == 'failed':
             # Payment failed
