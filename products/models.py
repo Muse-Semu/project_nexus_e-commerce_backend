@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 import uuid
 
 User = get_user_model()
@@ -46,6 +47,26 @@ class Category(models.Model):
             ancestors.append(parent)
             parent = parent.parent
         return ancestors
+
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug == '':
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Category.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        else:
+            # Ensure uniqueness if slug is provided
+            base_slug = self.slug
+            slug = base_slug
+            counter = 1
+            while Category.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
 
 class Brand(models.Model):
@@ -181,13 +202,23 @@ class Product(models.Model):
         # Auto-generate SKU if not provided
         if not self.sku:
             self.sku = f"SKU-{uuid.uuid4().hex[:8].upper()}"
-        
+
+        # Auto-generate slug if not provided
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Product.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+
         # Auto-generate meta fields if not provided
         if not self.meta_title:
             self.meta_title = self.name
         if not self.meta_description:
             self.meta_description = self.short_description or self.description[:160]
-        
+
         super().save(*args, **kwargs)
 
 

@@ -123,6 +123,7 @@ class CategorySerializer(serializers.ModelSerializer):
     """
     Serializer for categories
     """
+    slug = serializers.CharField(required=False, allow_blank=True)
     children = serializers.SerializerMethodField()
     product_count = serializers.SerializerMethodField()
     
@@ -132,7 +133,7 @@ class CategorySerializer(serializers.ModelSerializer):
             'id', 'name', 'slug', 'description', 'image', 'parent', 
             'is_active', 'children', 'product_count', 'created_at', 'updated_at'
         )
-        read_only_fields = ('id', 'slug', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at')
     
     def get_children(self, obj):
         """Get active children categories"""
@@ -166,7 +167,7 @@ class BrandSerializer(serializers.ModelSerializer):
             'id', 'name', 'slug', 'description', 'logo', 'website', 
             'is_active', 'product_count', 'created_at', 'updated_at'
         )
-        read_only_fields = ('id', 'slug', 'created_at', 'updated_at')
+        read_only_fields = ('id', 'created_at', 'updated_at')
     
     def get_product_count(self, obj):
         """Get count of active products for this brand"""
@@ -340,10 +341,12 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     """
     Serializer for creating products
     """
+    slug = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = Product
         fields = (
-            'name', 'description', 'short_description', 'category', 'brand',
+            'name', 'slug', 'description', 'short_description', 'category', 'brand',
             'base_price', 'sale_price', 'stock_quantity', 'low_stock_threshold',
             'condition', 'weight', 'dimensions', 'status', 'is_featured',
             'meta_title', 'meta_description', 'meta_keywords'
@@ -371,4 +374,4 @@ class ProductCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Set the vendor to the current user
         validated_data['vendor'] = self.context['request'].user
-        return super().create(validated_data) 
+        return super().create(validated_data)

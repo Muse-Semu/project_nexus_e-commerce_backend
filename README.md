@@ -1,7 +1,6 @@
 # E-commerce Backend - Project Nexus Plan
 
-A production-ready, high-performance e-commerce backend built with Django, designed to handle 1000 requests/second concurrently.
-
+A production-ready, high-performance e-commerce backend built with Django
 ## 🚀 Features
 
 ### Core Features
